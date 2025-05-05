@@ -1,0 +1,10 @@
+C:\Users\Admin\RiderProjects\ToDoNotesCW\ToDoNotesCW\bin\Debug\ToDoNotesCW.exe.config
+C:\Users\Admin\RiderProjects\ToDoNotesCW\ToDoNotesCW\bin\Debug\ToDoNotesCW.exe
+C:\Users\Admin\RiderProjects\ToDoNotesCW\ToDoNotesCW\bin\Debug\ToDoNotesCW.pdb
+C:\Users\Admin\RiderProjects\ToDoNotesCW\ToDoNotesCW\obj\Debug\ToDoNotesCW.csproj.AssemblyReference.cache
+C:\Users\Admin\RiderProjects\ToDoNotesCW\ToDoNotesCW\obj\Debug\ToDoNotesCW.Form1.resources
+C:\Users\Admin\RiderProjects\ToDoNotesCW\ToDoNotesCW\obj\Debug\ToDoNotesCW.Properties.Resources.resources
+C:\Users\Admin\RiderProjects\ToDoNotesCW\ToDoNotesCW\obj\Debug\ToDoNotesCW.csproj.GenerateResource.cache
+C:\Users\Admin\RiderProjects\ToDoNotesCW\ToDoNotesCW\obj\Debug\ToDoNotesCW.csproj.CoreCompileInputs.cache
+C:\Users\Admin\RiderProjects\ToDoNotesCW\ToDoNotesCW\obj\Debug\ToDoNotesCW.exe
+C:\Users\Admin\RiderProjects\ToDoNotesCW\ToDoNotesCW\obj\Debug\ToDoNotesCW.pdb
