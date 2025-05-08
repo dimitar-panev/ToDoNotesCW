@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-// first in, first out
+// first in, first out, last-in
 namespace ToDoNotesCW
 {
     public partial class Form1 : Form
     {
         private readonly Dictionary<string, TaskItem> _tasks = new Dictionary<string, TaskItem>(); // read-only dictionary - task name task detail
-        private readonly List<string> _taskList = new List<string>(); // task added
-        private readonly HashSet<string> _markedTasks = new HashSet<string>();
+        private readonly List<string> _taskList = new List<string>(); // task added - ordered colleciton of items
+        private readonly HashSet<string> _markedTasks = new HashSet<string>(); // collection storing given items
         private Timer _timer;
         private bool _isEventHandlersInitialized = false;
         private Stack<string> _taskStack = new Stack<string>(); // In LIFO manner
@@ -124,28 +124,30 @@ namespace ToDoNotesCW
         {
             foreach (string taskToDelete in _markedTasks.ToArray()) // Iterates over a copy of the _markedTasks hash set (converted to an array to avoid modification during enumeration).
             {
-                _tasks.Remove(taskToDelete); // Removes the TaskItem for the marked task from the _tasks dictionary.
-                _taskList.Remove(taskToDelete); // Removes the name of the marked task from the _taskList.
+                _tasks.Remove(taskToDelete); // remove taskitem for the marked task in _tasks
+                _taskList.Remove(taskToDelete); // removes name of marked task in _taskList
                 _taskStack = new Stack<string>(_taskStack.Where(t => t != taskToDelete)); // Creates a new stack without the marked task.
                 _taskQueue = new Queue<string>(_taskQueue.Where(t => t != taskToDelete)); // Creates a new queue without the marked task.
             }
-            _markedTasks.Clear(); // Clears the _markedTasks hash set after deleting all marked tasks.
-            UpdateTaskDisplay(); // Refreshes the displayed task list.
-            UpdateAllNotesDisplay(); // Refreshes the display of all task notes.
-            UpdateSelectedTaskDetails(); // Clears the details area.
+            _markedTasks.Clear(); // clear _markedTasks hash set after deletion
+            UpdateTaskDisplay();
+            UpdateAllNotesDisplay();
+            UpdateSelectedTaskDetails();
         }
 
         // Updates the displayed task list.
-        private void UpdateTaskDisplay() // Declares a private method named UpdateTaskDisplay.
+        private void UpdateTaskDisplay() // method for updating the tasks 
         {
             taskDisplay.Items.Clear(); // Clears all items from the taskDisplay list control.
-            _taskList.ForEach(task => taskDisplay.Items.Add($"{task}: {_tasks[task].Status}")); // Iterates through the _taskList, and for each task name, it retrieves the corresponding TaskItem from _tasks and adds a string containing the task name and its status to the taskDisplay list control.
+            _taskList.ForEach(task => taskDisplay.Items.Add($"{task}: {_tasks[task].Status}"));
+            // Iterates through the _taskList, and for each task name, it retrieves the corresponding TaskItem from _tasks
+            // and adds a string containing the task name and its status to the taskDisplay list control.
         }
 
         // Updates the display for the selected task's details.
-        private void UpdateSelectedTaskDetails() // Declares a private method named UpdateSelectedTaskDetails.
+        private void UpdateSelectedTaskDetails() //method
         {
-            string selectedTask = GetSelectedTask(); // Gets the name of the currently selected task.
+            string selectedTask = GetSelectedTask(); // gets name
             if (selectedTask != null && _tasks.TryGetValue(selectedTask, out var taskItem)) // Checks if a task is selected and if it exists in the _tasks dictionary.
             {
                 statusLabel.Text = $"Status: {taskItem.Status}"; // Sets the Text property of the statusLabel control to display the status of the selected task. // TODO: Localize
@@ -162,25 +164,25 @@ namespace ToDoNotesCW
         private void UpdateAllNotesDisplay() // Declares a private method named UpdateAllNotesDisplay.
         {
             allNotesDisplay.Clear(); // Clears all text from the allNotesDisplay control.
-            foreach (string task in _taskList) // Iterates through the _taskList.
+            foreach (string task in _taskList) // minava through the _taskList.
             {
                 if (_tasks.TryGetValue(task, out var taskItem) && !string.IsNullOrWhiteSpace(taskItem.Notes)) // Checks if the task exists in _tasks and if its notes are not null or whitespace.
                 {
-                    allNotesDisplay.AppendText($"Task: {task}\r\nNotes: {taskItem.Notes}\r\n\r\n"); // Appends the task name and its notes to the allNotesDisplay control, with line breaks for formatting.
-                }
+                    allNotesDisplay.AppendText($"Task: {task}\r\nNotes: {taskItem.Notes}\r\n\r\n"); // Appends the task name and its notes to the allNotesDisplay control
+                }                                                                    // line brakes
             }
         }
 
         // Gets the name of the selected task.
-        private string GetSelectedTask() => // Declares a private method named GetSelectedTask that returns a string.
-            taskDisplay.SelectedItem?.ToString().Split(':')[0].Trim(); // Gets the currently selected item from the taskDisplay list, converts it to a string (if it's not null), splits the string at the ':' character, takes the first part (the task name), removes any leading or trailing whitespace, and returns the result.
-
+        private string GetSelectedTask() => // private method that returns a string.
+            taskDisplay.SelectedItem?.ToString().Split(':')[0].Trim(); // Gets the currently selected item from the taskDisplay list, converts to string, splits :, first part
+                                                // ws
         // Handles mouse enter event for buttons.
-        private void Button_MouseEnter(object sender, EventArgs e) // Declares a private method named Button_MouseEnter, executed when the mouse cursor enters a button control.
+        private void Button_MouseEnter(object sender, EventArgs e) // when mouse enters a button control
         {
-            if (sender is Button button) // Checks if the 'sender' object is a Button control.
+            if (sender is Button button) // check if sender object is button
             {
-                button.BackColor = Color.FromArgb(53, 122, 189); // Changes the background color of the button to a darker blue when the mouse cursor hovers over it.
+                button.BackColor = Color.FromArgb(53, 122, 189); // change when mouse hover
             }
         }
 
@@ -194,24 +196,24 @@ namespace ToDoNotesCW
         }
 
         // Cleans up resources when the form closes.
-        protected override void OnFormClosing(FormClosingEventArgs e) // Overrides the OnFormClosing method, which is called when the form is closing. 'e' contains event-specific data.
+        protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            base.OnFormClosing(e); // Calls the base class's OnFormClosing method.
-            _timer?.Stop(); // Stops the timer if it's not null.
-            _timer?.Dispose(); // Releases the resources used by the timer if it's not null.
+            base.OnFormClosing(e);
+            _timer?.Stop();
+            _timer?.Dispose();
         }
     }
 
     // Represents a task item.
     public class TaskItem // Declares a public class named TaskItem.
     {
-        public string Status { get; set; } // Declares a public property named Status of type string, which gets or sets the status of the task.
-        public string Notes { get; set; } // Declares a public property named Notes of type string, which gets or sets the notes associated with the task.
+        public string Status { get; set; } // public property for status of tasks
+        public string Notes { get; set; } // gets notes assosiated with task
 
         public TaskItem(string status, string notes) // Declares a public constructor for the TaskItem class, which takes a status and notes as arguments.
         {
             Status = status; // Initializes the Status property with the provided 'status' argument.
-            Notes = notes ?? ""; // Initializes the Notes property with the provided 'notes' argument. If 'notes' is null, it defaults to an empty string.
+            Notes = notes ?? ""; // Initializes the Notes property. If 'notes' is null, it defaults to an empty string.
         }
     }
 }
