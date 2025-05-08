@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.taskInputLabel = new System.Windows.Forms.Label();
             this.taskInput = new System.Windows.Forms.TextBox();
             this.taskListLabel = new System.Windows.Forms.Label();
@@ -277,8 +278,10 @@
             this.Controls.Add(this.taskInputLabel);
             this.Controls.Add(this.taskInput);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Location = new System.Drawing.Point(15, 15);
             this.Name = "Form1";
+            this.Text = "To-Do and Notes";
             this.ResumeLayout(false);
             this.PerformLayout();
         }

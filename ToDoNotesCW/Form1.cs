@@ -46,81 +46,81 @@ namespace ToDoNotesCW
                 return;
             }
 // creates Pending and empty notes string
-            _tasks[task] = new TaskItem("Pending", ""); // adds to _tasks dictionary
-            _taskList.Add(task); // Adds the 'task' variable (the task name) to the _taskList.
-            _taskStack.Push(task); // Adds the 'task' variable to the top of the _taskStack.
-            _taskQueue.Enqueue(task); // Adds the 'task' variable to the end of the _taskQueue.
-            UpdateTaskDisplay(); // Calls the UpdateTaskDisplay method to refresh the list of tasks displayed on the form.
-            UpdateAllNotesDisplay(); // Calls the UpdateAllNotesDisplay method to refresh the display of all task notes.
-            taskInput.Clear(); // Clears the text in the taskInput control.
+            _tasks[task] = new TaskItem("Pending", "");
+            _taskList.Add(task); 
+            _taskStack.Push(task); 
+            _taskQueue.Enqueue(task);
+            UpdateTaskDisplay(); // call to refresh
+            UpdateAllNotesDisplay(); // refresh display of task notes
+            taskInput.Clear(); // clears text
         }
 
         // Saves notes for a task.
-        private void saveNotesButton_Click(object sender, EventArgs e) // Declares a private method named saveNotesButton_Click, executed when the saveNotesButton is clicked.
+        private void saveNotesButton_Click(object sender, EventArgs e)
         {
-            string selectedTask = GetSelectedTask(); // Calls the GetSelectedTask method to get the name of the currently selected task in the taskDisplay list.
-            if (selectedTask != null && _tasks.TryGetValue(selectedTask, out var taskItem)) // Checks if a task is selected (selectedTask is not null) and if the selected task exists as a key in the _tasks dictionary. If it exists, the corresponding TaskItem object is stored in the 'taskItem' variable.
+            string selectedTask = GetSelectedTask();
+            if (selectedTask != null && _tasks.TryGetValue(selectedTask, out var taskItem)) // Checks if a task is selected (selectedTask is not null) and if the selected task exists as a key in the _tasks dictionary. If exists - store in the 'taskItem' variable.
             {
-                taskItem.Notes = notesInput.Text; // Sets the Notes property of the retrieved TaskItem object to the text in the notesInput control.
-                UpdateAllNotesDisplay(); // Calls the UpdateAllNotesDisplay method to refresh the display of all task notes.
-                MessageBox.Show($"Notes saved for {selectedTask}"); // Displays a message box confirming that the notes have been saved for the selected task. // TODO: Localize
+                taskItem.Notes = notesInput.Text;
+                UpdateAllNotesDisplay(); // refresh again
+                MessageBox.Show($"Notes saved for {selectedTask}");
                 notesInput.Clear(); // Clears the text in the notesInput control.
             }
         }
 
         // Toggles a task's status (Pending/Completed).
-        private void toggleStatusButton_Click(object sender, EventArgs e) // Declares a private method named toggleStatusButton_Click, executed when the toggleStatusButton is clicked.
+        private void toggleStatusButton_Click(object sender, EventArgs e)
         {
             if (taskDisplay.SelectedItem != null) // Checks if an item is currently selected in the taskDisplay list.
             {
                 string selectedTask = GetSelectedTask(); // Gets the name of the selected task.
-                if (_tasks.TryGetValue(selectedTask, out var taskItem)) // Tries to get the TaskItem object for the selected task from the _tasks dictionary.
+                if (_tasks.TryGetValue(selectedTask, out var taskItem)) // try get TaskItem from _tasks dict
                 {
                     taskItem.Status = taskItem.Status == "Pending" ? "Completed" : "Pending"; // Toggles the Status property of the TaskItem. If it's "Pending", it's changed to "Completed", and vice versa.
-                    UpdateTaskDisplay(); // Refreshes the displayed task list to show the updated status.
-                    UpdateSelectedTaskDetails(); // Refreshes the details area to show the updated status.
+                    UpdateTaskDisplay(); // refresh
+                    UpdateSelectedTaskDetails(); // refresh
                 }
             }
         }
 
         // Handles task selection changes.
-        private void taskDisplay_SelectedIndexChanged(object sender, EventArgs e) // Declares a private method named taskDisplay_SelectedIndexChanged, executed when the selected item in the taskDisplay list changes.
+        private void taskDisplay_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateSelectedTaskDetails(); // Calls the UpdateSelectedTaskDetails method to display the details (status and notes) of the newly selected task.
-            string selectedTask = GetSelectedTask(); // Gets the name of the currently selected task.
-            markCheckBox.Checked = selectedTask != null && _markedTasks.Contains(selectedTask); // Sets the Checked property of the markCheckBox based on whether the selected task's name exists in the _markedTasks hash set.
+            UpdateSelectedTaskDetails(); // display details of newly selected task
+            string selectedTask = GetSelectedTask(); // gets name of selected t
+            markCheckBox.Checked = selectedTask != null && _markedTasks.Contains(selectedTask); // make checked if exists in hash set _markedTask
         }
 
         // Deletes the selected task.
-        private void deleteButton_Click(object sender, EventArgs e) // Declares a private method named deleteButton_Click, executed when the deleteButton is clicked.
+        private void deleteButton_Click(object sender, EventArgs e)
         {
-            string selectedTask = GetSelectedTask(); // Gets the name of the selected task.
-            if (selectedTask != null) // Checks if a task is currently selected.
+            string selectedTask = GetSelectedTask();
+            if (selectedTask != null) // check if selected
             {
-                _tasks.Remove(selectedTask); // Removes the TaskItem associated with the selected task from the _tasks dictionary.
-                _taskList.Remove(selectedTask); // Removes the name of the selected task from the _taskList.
-                _markedTasks.Remove(selectedTask); // Removes the name of the selected task from the _markedTasks hash set, if it was marked.
+                _tasks.Remove(selectedTask); // self-explanatory
+                _taskList.Remove(selectedTask);
+                _markedTasks.Remove(selectedTask);
                 _taskStack = new Stack<string>(_taskStack.Where(t => t != selectedTask)); // Creates a new stack containing all tasks from the old stack except the deleted one.
-                _taskQueue = new Queue<string>(_taskQueue.Where(t => t != selectedTask)); // Creates a new queue containing all tasks from the old queue except the deleted one.
-                UpdateTaskDisplay(); // Refreshes the displayed task list.
-                UpdateAllNotesDisplay(); // Refreshes the display of all task notes.
-                UpdateSelectedTaskDetails(); // Clears the details area since no task is selected anymore (implicitly after deletion).
+                _taskQueue = new Queue<string>(_taskQueue.Where(t => t != selectedTask)); // Creates a new queue ...
+                UpdateTaskDisplay(); // refresh
+                UpdateAllNotesDisplay(); // refresh
+                UpdateSelectedTaskDetails(); // clear cuz no task selected
             }
         }
 
         // Handles marking/unmarking tasks for deletion.
-        private void markCheckBox_CheckedChanged(object sender, EventArgs e) // Declares a private method named markCheckBox_CheckedChanged, executed when the Checked state of the markCheckBox changes.
+        private void markCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            string selectedTask = GetSelectedTask(); // Gets the name of the selected task.
-            if (selectedTask != null) // Checks if a task is currently selected.
+            string selectedTask = GetSelectedTask(); // g name
+            if (selectedTask != null) // selected?
             {
-                if (markCheckBox.Checked) _markedTasks.Add(selectedTask); // If the checkbox is checked, adds the selected task's name to the _markedTasks hash set.
+                if (markCheckBox.Checked) _markedTasks.Add(selectedTask); // if checked - add to _markedTasks
                 else _markedTasks.Remove(selectedTask); // If the checkbox is unchecked, removes the selected task's name from the _markedTasks hash set.
             }
         }
 
         // Deletes all marked tasks.
-        private void deleteMarkedButton_Click(object sender, EventArgs e) // Declares a private method named deleteMarkedButton_Click, executed when the deleteMarkedButton is clicked.
+        private void deleteMarkedButton_Click(object sender, EventArgs e)
         {
             foreach (string taskToDelete in _markedTasks.ToArray()) // Iterates over a copy of the _markedTasks hash set (converted to an array to avoid modification during enumeration).
             {
