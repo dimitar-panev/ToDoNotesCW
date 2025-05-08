@@ -140,8 +140,7 @@ namespace ToDoNotesCW
         {
             taskDisplay.Items.Clear(); // Clears all items from the taskDisplay list control.
             _taskList.ForEach(task => taskDisplay.Items.Add($"{task}: {_tasks[task].Status}"));
-            // Iterates through the _taskList, and for each task name, it retrieves the corresponding TaskItem from _tasks
-            // and adds a string containing the task name and its status to the taskDisplay list control.
+            // Iterates through the _taskList and retrieves taskitem from _task and adds a string containing the task name and its status
         }
 
         // Updates the display for the selected task's details.
