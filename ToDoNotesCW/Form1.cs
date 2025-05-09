@@ -8,13 +8,12 @@ namespace ToDoNotesCW
 {
     public partial class Form1 : Form
     {
-        private readonly Dictionary<string, TaskItem> _tasks = new Dictionary<string, TaskItem>(); // read-only dictionary - task name task detail
-        private readonly List<string> _taskList = new List<string>(); // task added - ordered colleciton of items
-        private readonly HashSet<string> _markedTasks = new HashSet<string>(); // collection storing given items
+        private readonly Dictionary<string, TaskItem> _tasks = new Dictionary<string, TaskItem>(); // read-only dictionary - storing info(taskitem)
+        private readonly List<string> _taskList = new List<string>(); // task added - ordered list of items
+        private readonly HashSet<string> _markedTasks = new HashSet<string>(); // collection storing given items     ( mainly to keep track of marked for deletion)(efficient for checking if something is selected
         private Timer _timer;
-        private bool _isEventHandlersInitialized = false;
-        private Stack<string> _taskStack = new Stack<string>(); // In LIFO manner
-        private Queue<string> _taskQueue = new Queue<string>(); // In FIFO manner
+        private Stack<string> _taskStack = new Stack<string>(); // task names in order they were added
+        private Queue<string> _taskQueue = new Queue<string>(); // again to store in order, lifo not used(undo intended)
 
         public Form1() // calls methods
         {
@@ -59,7 +58,8 @@ namespace ToDoNotesCW
         private void saveNotesButton_Click(object sender, EventArgs e)
         {
             string selectedTask = GetSelectedTask();
-            if (selectedTask != null && _tasks.TryGetValue(selectedTask, out var taskItem)) // Checks if a task is selected (selectedTask is not null) and if the selected task exists as a key in the _tasks dictionary. If exists - store in the 'taskItem' variable.
+            if (selectedTask != null && _tasks.TryGetValue(selectedTask, out var taskItem)) // Checks if a task is selected (selectedTask is not null) and if the selected task
+                                                                                            // exists as a key in the _tasks dictionary. If exists - store in the 'taskItem' variable.
             {
                 taskItem.Notes = notesInput.Text;
                 UpdateAllNotesDisplay(); // refresh again
